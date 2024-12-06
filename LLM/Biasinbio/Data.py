@@ -1,27 +1,29 @@
 from datasets import load_dataset
 from transformers import AutoTokenizer
 
+# Paths
+model_path = "./model"  # Path where the tokenizer is saved
+data_save_path = "./data"  # Path to save the tokenized dataset
+
 # Load the tokenizer
-tokenizer = AutoTokenizer.from_pretrained("./model")  # Use your downloaded tokenizer
+print("Loading tokenizer...")
+tokenizer = AutoTokenizer.from_pretrained(model_path)
 
-# Load Bias in Bios dataset
-print("Downloading Bias in Bios dataset...")
-dataset = load_dataset("LabHC/bias_in_bios", split="train[:5000]")  # Use a subset for quick testing
-
-# Inspect the dataset structure
-print(f"Columns in the dataset: {dataset.column_names}")
+# Download and load the dataset
+print("Downloading Bias in Bios test dataset...")
+test_dataset = load_dataset("LabHC/bias_in_bios", split="test[:500]")  # Limit to 500 entries
 
 # Tokenize the dataset
 def tokenize_function(examples):
     return tokenizer(examples["hard_text"], truncation=True, padding="max_length", max_length=128)
 
-print("Tokenizing dataset...")
-tokenized_dataset = dataset.map(tokenize_function, batched=True)
+print("Tokenizing the dataset...")
+tokenized_test_dataset = test_dataset.map(tokenize_function, batched=True)
 
-# Rename the profession column to labels for classification
-tokenized_dataset = tokenized_dataset.rename_column("profession", "labels")
-tokenized_dataset = tokenized_dataset.with_format("torch")  # Convert to PyTorch tensors
+# Prepare the dataset for saving
+tokenized_test_dataset = tokenized_test_dataset.rename_column("profession", "labels")
+tokenized_test_dataset.set_format(type="torch", columns=["input_ids", "attention_mask", "labels", "gender"])
 
-# Save the processed dataset
-tokenized_dataset.save_to_disk("./data")
-print("Tokenized dataset saved in ./data.")
+# Save the tokenized dataset
+tokenized_test_dataset.save_to_disk(data_save_path)
+print(f"Tokenized dataset saved at {data_save_path}")

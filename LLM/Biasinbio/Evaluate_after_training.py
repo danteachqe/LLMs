@@ -8,14 +8,14 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 
 # Paths
-model_path = "./model"  # Path to the saved model
+fine_tuned_model_path = "./fine_tuned_model"  # Path to your fine-tuned model
 data_path = "./data"  # Path to the tokenized dataset
 batch_size = 16  # Adjust batch size as needed
 
-# Load the model and tokenizer
-print("Loading model and tokenizer...")
-model = AutoModelForSequenceClassification.from_pretrained(model_path)
-tokenizer = AutoTokenizer.from_pretrained(model_path)
+# Load the fine-tuned model and tokenizer
+print("Loading fine-tuned model and tokenizer...")
+model = AutoModelForSequenceClassification.from_pretrained(fine_tuned_model_path)
+tokenizer = AutoTokenizer.from_pretrained(fine_tuned_model_path)
 
 # Load the tokenized dataset
 print("Loading tokenized dataset...")
@@ -37,7 +37,7 @@ total_batches = len(dataloader)
 total_examples = len(tokenized_test_dataset)
 processed_examples = 0
 
-print("Evaluating the model...")
+print("Evaluating the fine-tuned model...")
 for batch_idx, batch in enumerate(dataloader):
     # Move inputs and labels to the appropriate device
     inputs = {
