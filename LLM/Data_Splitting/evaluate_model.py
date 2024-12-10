@@ -3,7 +3,7 @@ from transformers import DistilBertTokenizer, DistilBertForSequenceClassificatio
 import pandas as pd
 
 # Step 1: Load the evaluation dataset
-eval_file = "./iris_eval.csv"  # Update with your actual file path
+eval_file = "./iris_train.csv"  # Update with your actual file path
 eval_data = pd.read_csv(eval_file)
 
 # Step 2: Convert the dataset to Hugging Face Dataset
@@ -26,7 +26,7 @@ def tokenize_data(example):
 tokenized_eval_dataset = eval_dataset.map(tokenize_data, batched=True)
 
 # Step 5: Load the trained model
-model = DistilBertForSequenceClassification.from_pretrained("./results_fold_5/checkpoint-18")  # Path to the saved model
+model = DistilBertForSequenceClassification.from_pretrained("./results/checkpoint-60")  # Path to the saved model
 
 # Step 6: Initialize Trainer
 trainer = Trainer(
